@@ -4,6 +4,11 @@ package mainPackage;
  * This class should set up the general layout of the frame. The goal of the class is to get a menu bar
  * on the left, which has buttons to select brush. 
  */
+
+
+/*
+ * 
+ */
 import javafx.event.EventHandler;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -24,23 +29,46 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.paint.*;
 import javafx.scene.canvas.*;
-
+/*
+ * the above imports are mostly from the javaFX API that has been used to create the GUI.
+ * V0.01 - a very early working version. Still in the process of creating more brushes/tools. 
+ * 
+ * 
+ * 
+ * 
+ */
 
 public class Frame extends Application {
+	/*
+	 * The border pane will be the main pane where everything is laid out. on the left, buttons will appear *temporarily removed while working with imageView* 
+	 * used to select tools
+	 */
 	private BorderPane root = new BorderPane();
 	
+	//variable used to set the current brush object.
+	public Brush currentBrush = new Pencil(Brush.DEFAULT_SIZE);
+	
+	/*
+	 * declaring the canvas and graphicsContext up here as static allows the brushes to access them statically, 
+	 * this makes it a lot easier to have different brushes do different things.
+	 */
+	
+	static final Canvas canvas = new Canvas(500,500);
+	public static GraphicsContext gc = canvas.getGraphicsContext2D();
+	
+	
+	/*
+	 * initUI
+	 * purpose: to position everything properly on the screen
+	 * input: a stage-part of the javaFX API
+	 * output: the organised screen to run
+	 */
 	private void initUI (Stage stage){
 		VBox leftButtons = addVBox();
 		root.setLeft(leftButtons);
 		Scene scene = new Scene(root, 300, 300);
 		Group canvas = createCanvas();
 		root.setCenter(canvas);
-		
-		
-		
-		
-		
-		
 		stage.setTitle("<Paint>");
 		stage.setScene(scene);
 		stage.show();
@@ -49,46 +77,104 @@ public class Frame extends Application {
 		
 		
 	}
+	/*
+	 * main
+	 * launches the program
+	 */
 	public static void main (String [] args){
 		launch (args);
 	}
+	
+	
+	/*
+	 * (non-Javadoc)
+	 * @see javafx.application.Application#start(javafx.stage.Stage)
+	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		// TODO Auto-generated method stub
 		initUI(primaryStage);
 	}
-	
+	/*
+	 * addVBox
+	 * purpose: this is the buttons section on the left hand side of the screen.
+	 * input: nothing
+	 * output: returns a vbox filled with buttons
+	 */
 	private VBox addVBox (){
+		//this section is to set up the layout of the vbox
 		VBox vbox = new VBox();
 		vbox.setPadding(new Insets(15, 12, 15, 12));
 		vbox.setSpacing(5);
 		vbox.setStyle("-fx-background-color: #84A3F6;");
-		Button [] buttonList = new Button [10];
-		for (int i=0;i<10;i++){
-			buttonList[i] = new Button();
-			buttonList[i].setAccessibleHelp("placeholder");
-			vbox.getChildren().addAll(buttonList[i]);
-		}
+		//vbox layout done here
+		//creating buttons
+		//pencil button
+			Image pencilImage = null;
+			pencilImage = new Image(getClass().getResourceAsStream("stock-tool-pencil-22.png"));
+			Button pencilTool = new Button ();
+			pencilTool.setGraphic(new ImageView(pencilImage));
+			pencilTool.setOnAction(new EventHandler<ActionEvent>(){
+				@Override
+				public void handle (ActionEvent e){
+					setBrush(new Pencil(Brush.DEFAULT_SIZE));
+				}
+			});
+		//eraser button
+			Image eraserImage = new Image(getClass().getResourceAsStream("stock-tool-eraser-22.png"));
+			Button eraserTool = new Button();
+			eraserTool.setGraphic(new ImageView(eraserImage));
+			eraserTool.setOnAction(new EventHandler<ActionEvent>(){
+				@Override 
+				public void handle(ActionEvent e){
+					setBrush(new Eraser(Brush.DEFAULT_SIZE));
+				}
+			});
+		//brushTool tool
+			Image brushImage = new Image(getClass().getResourceAsStream("stock-tool-paintbrush-22.png"));
+			Button brushTool = new Button();
+			brushTool.setGraphic(new ImageView(brushImage));
+			brushTool.setOnAction(new EventHandler<ActionEvent>(){
+				@Override
+				public void handle(ActionEvent e){
+					setBrush(new BrushTool(Brush.DEFAULT_SIZE));
+				}
+			});
+		vbox.getChildren().addAll(pencilTool, brushTool, eraserTool);
 		return vbox;
 	}
 	
+	/*
+	 * createCanvas
+	 * purpose: this creates the drawing area in the center of the screen
+	 * input: nothing
+	 * output: a canvas that you can draw on
+	 * 
+	 * problems: no clearly defined border, look into finding a way to define that, maybe change the background of the borderlayout
+	 */
 	private Group createCanvas(){
 		Group root = new Group();
 		Scene s = new Scene(root, 300, 300, Color.BLACK);
-
-		final Canvas canvas = new Canvas(500,500);
-		GraphicsContext gc = canvas.getGraphicsContext2D();
-		canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, 
-			       new EventHandler<MouseEvent>() {
-			           @Override
-			           public void handle(MouseEvent e) {
-			               gc.fillRect(e.getX() - 2, e.getY() - 2, 5, 5);
-			           }
-			       });
+		currentBrush.draw();
 		
-		 
 		root.getChildren().add(canvas);
 		return root;
+	}
+	
+	
+	
+	
+	/*
+	 * setBrush
+	 * purpose: to switch the current brush to the desired new brush
+	 * input: the new Brush object
+	 * output: the current brush will be set to the new brush
+	 * 
+	 */
+	
+	public void setBrush(Brush newBrush){
+		currentBrush = newBrush;
+		currentBrush.draw();
 	}
 	
 }
