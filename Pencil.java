@@ -1,4 +1,4 @@
-//package mainPackage;
+package mainPackage;
 import javafx.event.EventHandler;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -22,7 +22,7 @@ import javafx.scene.canvas.*;
 
 public class Pencil implements Brush {
 	private int size;
-	private Color color = Brush.DEFAULT_COLOR;
+	private Color color;
 	final GraphicsContext graphicsContext = Frame.canvas.getGraphicsContext2D();
 	public Pencil(int size){
 		this.size = size;
@@ -34,7 +34,9 @@ public class Pencil implements Brush {
 	}
 	@Override
 	public void draw() {
-		Frame.gc.setFill(color);
+		graphicsContext.setFill(this.color);
+		Frame.gc.setFill(this.color);
+		System.out.println(this.color);
 		Frame.canvas.setOnMouseDragged(new EventHandler<MouseEvent>() {
 			        	@Override
 			        	public void handle(MouseEvent e) {
@@ -43,11 +45,11 @@ public class Pencil implements Brush {
 			           }
 			       });
 		Frame.canvas.setOnMousePressed(new EventHandler<MouseEvent>(){
-			@Override
-			public void handle(MouseEvent e){
-					graphicsContext.beginPath();
-                	graphicsContext.moveTo(e.getX(), e.getY());
-                	graphicsContext.stroke();
+						@Override
+						public void handle(MouseEvent e){
+							graphicsContext.beginPath();
+							graphicsContext.moveTo(e.getX(), e.getY());
+							graphicsContext.stroke();
 			}
 		}); 
 		
@@ -59,6 +61,9 @@ public class Pencil implements Brush {
 	
 	public void setColor(Color newColor){
 		color = newColor;
+	}
+	public Color getColor(){
+		return this.color;
 	}
 	
 }

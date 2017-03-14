@@ -31,5 +31,11 @@ public class Eraser implements Brush {
 	public void setSize(int size){
 		this.size = size;
 	}
-
+	@Override
+	public void setColor(Color color){
+		
+	}
+	public Color getColor(){
+		return Brush.DEFAULT_COLOR;
+	}
 }

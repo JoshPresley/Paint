@@ -6,7 +6,7 @@ import javafx.scene.paint.Color;
 
 public class BrushTool implements Brush {
 	private int size=Brush.DEFAULT_SIZE;
-	private Color color = Brush.DEFAULT_COLOR;
+	private Color color;
 	public BrushTool(int size){
 		this.size=size;
 	}
@@ -16,6 +16,7 @@ public class BrushTool implements Brush {
 	}
 	@Override
 	public void draw() {
+		Frame.gc.setFill(this.color);
 		Frame.canvas.setOnMouseDragged(new EventHandler<MouseEvent>() {
 	           @Override
 	           public void handle(MouseEvent e) {
@@ -36,5 +37,12 @@ public class BrushTool implements Brush {
 		// TODO Auto-generated method stub
 
 	}
-
+	@Override
+	public void setColor(Color color){
+		this.color=color;
+	}
+	
+	public Color getColor(){
+		return this.color;
+	}
 }
