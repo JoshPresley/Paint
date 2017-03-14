@@ -12,14 +12,20 @@ package mainPackage;
 import javafx.event.EventHandler;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ColorPicker;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
@@ -31,8 +37,8 @@ import javafx.scene.paint.*;
 import javafx.scene.canvas.*;
 /*
  * the above imports are mostly from the javaFX API that has been used to create the GUI.
- * V0.01 - a very early working version. Still in the process of creating more brushes/tools. 
- * 
+ * V0.05 - a very early working version. Still in the process of creating more brushes/tools. 
+ * lines look better, added a menubar, and can change color
  * 
  * 
  * 
@@ -43,10 +49,10 @@ public class Frame extends Application {
 	 * The border pane will be the main pane where everything is laid out. on the left, buttons will appear *temporarily removed while working with imageView* 
 	 * used to select tools
 	 */
-	private BorderPane root = new BorderPane();
+	private BorderPane root1 = new BorderPane();
 	
 	//variable used to set the current brush object.
-	public Brush currentBrush = new Pencil(Brush.DEFAULT_SIZE);
+	public Brush currentBrush = new Pencil(Brush.DEFAULT_SIZE, Brush.DEFAULT_COLOR);
 	
 	/*
 	 * declaring the canvas and graphicsContext up here as static allows the brushes to access them statically, 
@@ -64,11 +70,41 @@ public class Frame extends Application {
 	 * output: the organised screen to run
 	 */
 	private void initUI (Stage stage){
+		Stage stage1=new Stage();
+		stage.setTitle("<Paint>");
+		Group root = new Group();
+		Scene scene = new Scene(root, 500, 500, Color.WHITE);
+		
+		MenuBar menu = new MenuBar();
+		Menu File, Edit, Help;
+		
+		File = new Menu("file");
+		Edit = new Menu("edit");
+		Help = new Menu("help");
+		
+		menu.getMenus().addAll(File, Edit, Help);
+		
 		VBox leftButtons = addVBox();
-		root.setLeft(leftButtons);
-		Scene scene = new Scene(root, 300, 300);
 		Group canvas = createCanvas();
-		root.setCenter(canvas);
+		
+		
+		
+	   
+		MenuItem colorPick = new MenuItem("select Color", null);
+		colorPick.setOnAction(new EventHandler<ActionEvent>(){
+			@Override
+			public void handle(ActionEvent e){
+				colorScreen(stage1);
+			}
+		});
+		
+		Edit.getItems().add(colorPick);
+		
+		
+		root1.setTop(menu);
+		root1.setCenter(canvas);
+		root1.setLeft(leftButtons);
+		root.getChildren().add(root1);
 		stage.setTitle("<Paint>");
 		stage.setScene(scene);
 		stage.show();
@@ -76,6 +112,27 @@ public class Frame extends Application {
 		
 		
 		
+	}
+	
+	private void colorScreen(Stage stage){
+		stage.setTitle("Choose Color");
+		FlowPane flow = new FlowPane();
+		
+		Scene scene = new Scene(flow, 50, 50, Color.HONEYDEW);
+		final ColorPicker colorPicker = new ColorPicker();
+	    colorPicker.setValue(Brush.DEFAULT_COLOR);
+	    flow.getChildren().add(colorPicker);
+	    colorPicker.setOnAction(new EventHandler<ActionEvent>(){
+			@Override
+			public void handle(ActionEvent e){
+				currentBrush.setColor(colorPicker.getValue());
+				currentBrush.draw();
+				stage.close();
+			}
+		});
+	    stage.setScene(scene);
+	    stage.show();
+	    
 	}
 	/*
 	 * main
@@ -140,6 +197,9 @@ public class Frame extends Application {
 					setBrush(new BrushTool(Brush.DEFAULT_SIZE));
 				}
 			});
+		
+			
+			
 		vbox.getChildren().addAll(pencilTool, brushTool, eraserTool);
 		return vbox;
 	}
@@ -156,10 +216,11 @@ public class Frame extends Application {
 		Group root = new Group();
 		Scene s = new Scene(root, 300, 300, Color.BLACK);
 		currentBrush.draw();
-		
 		root.getChildren().add(canvas);
 		return root;
 	}
+	
+	
 	
 	
 	

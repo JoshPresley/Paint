@@ -1,4 +1,4 @@
-//package mainPackage;
+package mainPackage;
 
 import javafx.scene.paint.Color;
 
@@ -10,5 +10,6 @@ public interface Brush {
 	//this method should be called to carry out the paint actions.
 	public void draw();
 	public void setSize(int size);
-	
+	public void setColor(Color color);
+	public Color getColor();
 }
