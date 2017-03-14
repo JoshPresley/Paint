@@ -8,4 +8,6 @@ to create a program with similar features as Microsoft Paint, including, but not
 this program will be written fully in Java. We may choose to implement the user interface with swing packages or include the use of JavaFx.
 
 #Latest update
-created the repository
+V0.05 - a very early working version. Still in the process of creating more brushes/tools. 
+ * lines look better, added a menubar, and can change color
+ * 
