@@ -36,7 +36,7 @@ public class BrushTool implements Brush {
                 	graphicsContext.stroke();
 				}
 			}); 
-		
+		Frame.canvas.setOnMouseReleased(null);
 	}
 
 	@Override
