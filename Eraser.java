@@ -25,6 +25,7 @@ public class Eraser implements Brush {
 				Frame.gc.clearRect(e.getX() - 2, e.getY() - 2, size, size);	
 			}
 		}); 
+		Frame.canvas.setOnMouseReleased(null);
 		
 	}
 	@Override

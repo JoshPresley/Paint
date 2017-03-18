@@ -11,6 +11,7 @@ package mainPackage;
  */
 import javafx.event.EventHandler;
 import javafx.application.Application;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.geometry.Insets;
@@ -24,6 +25,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -32,9 +34,13 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.paint.*;
 import javafx.scene.canvas.*;
+
+import java.awt.image.RenderedImage;
+import java.io.*;
 /*
  * the above imports are mostly from the javaFX API that has been used to create the GUI.
  * V0.05 - a very early working version. Still in the process of creating more brushes/tools. 
@@ -43,6 +49,9 @@ import javafx.scene.canvas.*;
  * 
  * 
  */
+import java.util.logging.Logger;
+
+import javax.imageio.ImageIO;
 
 public class Frame extends Application {
 	/*
@@ -89,16 +98,37 @@ public class Frame extends Application {
 		
 		
 		
-	   
-		MenuItem colorPick = new MenuItem("select Color", null);
-		colorPick.setOnAction(new EventHandler<ActionEvent>(){
-			@Override
-			public void handle(ActionEvent e){
-				colorScreen(stage1);
-			}
-		});
+	   MenuItem save = new MenuItem("save");
+	   save.setOnAction(new EventHandler<ActionEvent>(){
+		   @Override
+           public void handle(ActionEvent t) {
+               FileChooser fileChooser = new FileChooser();
+                
+               //Set extension filter
+               FileChooser.ExtensionFilter extFilter = 
+                       new FileChooser.ExtensionFilter("png files (*.png)", "*.png");
+               fileChooser.getExtensionFilters().add(extFilter);
+              
+               //Show save file dialog
+               File file = fileChooser.showSaveDialog(stage);
+                
+               if(file != null){
+                   try {
+                       WritableImage writableImage = new WritableImage(500, 500);
+                       canvas.snapshot(null, writableImage);
+                       RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
+                       ImageIO.write(renderedImage, "png", file);
+                   } catch (IOException ex) {
+                      // Logger.getLogger(JavaFX_DrawOnCanvas.class.getName()).log(Level.SEVERE, null, ex);
+                   }
+               }
+           }
+	   });
 		
-		Edit.getItems().add(colorPick);
+	   File.getItems().add(save);
+		
+		
+		
 		
 		
 		root1.setTop(menu);
@@ -114,26 +144,7 @@ public class Frame extends Application {
 		
 	}
 	
-	private void colorScreen(Stage stage){
-		stage.setTitle("Choose Color");
-		FlowPane flow = new FlowPane();
-		
-		Scene scene = new Scene(flow, 50, 50, Color.HONEYDEW);
-		final ColorPicker colorPicker = new ColorPicker();
-	    colorPicker.setValue(Brush.DEFAULT_COLOR);
-	    flow.getChildren().add(colorPicker);
-	    colorPicker.setOnAction(new EventHandler<ActionEvent>(){
-			@Override
-			public void handle(ActionEvent e){
-				currentBrush.setColor(colorPicker.getValue());
-				currentBrush.draw();
-				stage.close();
-			}
-		});
-	    stage.setScene(scene);
-	    stage.show();
-	    
-	}
+	
 	/*
 	 * main
 	 * launches the program
@@ -197,10 +208,31 @@ public class Frame extends Application {
 					setBrush(new BrushTool(Brush.DEFAULT_SIZE));
 				}
 			});
+		//LineTool
+			Image lineImage = new Image(getClass().getResourceAsStream("stock-tool-cage-22.png"));
+			Button lineTool = new Button();
+			lineTool.setGraphic(new ImageView(lineImage));
+			lineTool.setOnAction(new EventHandler<ActionEvent>(){
+				@Override
+				public void handle(ActionEvent e){
+					setBrush(new LineTool());
+				}
+			});
+		//color chooser
+			final ColorPicker colorPicker = new ColorPicker();
+			colorPicker.setMaxSize(50, 50);
+		    colorPicker.setValue(Brush.DEFAULT_COLOR);
+		    colorPicker.setOnAction(new EventHandler<ActionEvent>(){
+				@Override
+				public void handle(ActionEvent e){
+					currentBrush.setColor(colorPicker.getValue());
+					currentBrush.draw();
+					}
+			});
 		
 			
 			
-		vbox.getChildren().addAll(pencilTool, brushTool, eraserTool);
+		vbox.getChildren().addAll(pencilTool, brushTool, eraserTool, lineTool, colorPicker);
 		return vbox;
 	}
 	

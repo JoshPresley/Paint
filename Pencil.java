@@ -51,7 +51,7 @@ public class Pencil implements Brush {
 							graphicsContext.stroke();
 			}
 		}); 
-		
+		Frame.canvas.setOnMouseReleased(null);
 	}
 	@Override
 	public void setSize(int size){
