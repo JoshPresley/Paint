@@ -124,7 +124,7 @@ public class Frame extends Application {
                }
            }
 	   });
-		
+	   
 	   File.getItems().add(save);
 		
 		
@@ -174,7 +174,7 @@ public class Frame extends Application {
 		VBox vbox = new VBox();
 		vbox.setPadding(new Insets(15, 12, 15, 12));
 		vbox.setSpacing(5);
-		vbox.setStyle("-fx-background-color: #84A3F6;");
+		vbox.setStyle("-fx-background-color: #353538;");
 		//vbox layout done here
 		//creating buttons
 		//pencil button
@@ -218,6 +218,24 @@ public class Frame extends Application {
 					setBrush(new LineTool());
 				}
 			});
+			Image boxEmptyImage = new Image(getClass().getResourceAsStream("stock-tool-rect-select-22.png"));
+			Button boxEmptyTool = new Button();
+			boxEmptyTool.setGraphic(new ImageView(boxEmptyImage));
+			boxEmptyTool.setOnAction(new EventHandler<ActionEvent>(){
+				@Override
+				public void handle(ActionEvent e){
+					setBrush(new EmptyBoxTool());
+				}
+			});
+			Image boxImage = new Image(getClass().getResourceAsStream("stock-tool-scale-22.png"));
+			Button boxTool = new Button();
+			boxTool.setGraphic(new ImageView(boxImage));
+			boxTool.setOnAction(new EventHandler<ActionEvent>(){
+				@Override
+				public void handle(ActionEvent e){
+					setBrush(new BoxTool());
+				}
+			});
 		//color chooser
 			final ColorPicker colorPicker = new ColorPicker();
 			colorPicker.setMaxSize(50, 50);
@@ -232,7 +250,7 @@ public class Frame extends Application {
 		
 			
 			
-		vbox.getChildren().addAll(pencilTool, brushTool, eraserTool, lineTool, colorPicker);
+		vbox.getChildren().addAll(pencilTool, brushTool, lineTool, boxTool, boxEmptyTool,  eraserTool, colorPicker);
 		return vbox;
 	}
 	
