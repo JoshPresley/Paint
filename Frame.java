@@ -94,6 +94,7 @@ public class Frame extends Application {
 		menu.getMenus().addAll(File, Edit, Help);
 		
 		VBox leftButtons = addVBox();
+		//leftButtons.getStyleClass().add("VBox");
 		Group canvas = createCanvas();
 		
 		
@@ -236,6 +237,15 @@ public class Frame extends Application {
 					setBrush(new BoxTool());
 				}
 			});
+			Image EmptyOvalImage = new Image(getClass().getResourceAsStream("stock-tool-elipse-select-22.png"));
+			Button EmptyOvalTool = new Button();
+			EmptyOvalTool.setGraphic(new ImageView(EmptyOvalImage));
+			EmptyOvalTool.setOnAction(new EventHandler<ActionEvent>(){
+				@Override
+				public void handle(ActionEvent e){
+					setBrush(new EmptyOval());
+				}
+			});
 		//color chooser
 			final ColorPicker colorPicker = new ColorPicker();
 			colorPicker.setMaxSize(50, 50);
@@ -250,7 +260,7 @@ public class Frame extends Application {
 		
 			
 			
-		vbox.getChildren().addAll(pencilTool, brushTool, lineTool, boxTool, boxEmptyTool,  eraserTool, colorPicker);
+		vbox.getChildren().addAll(brushTool, lineTool, boxTool, boxEmptyTool, EmptyOvalTool,  eraserTool, colorPicker);
 		return vbox;
 	}
 	
